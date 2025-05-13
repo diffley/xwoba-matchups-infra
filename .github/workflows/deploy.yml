@@ -14,19 +14,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set Up Node.js
-        uses: actions/setup-node@v3
+      # Set up Supabase CLI
+      - name: Setup Supabase CLI
+        uses: supabase/cli-action@v1
         with:
-          node-version: 20
+          version: 1.66.0  # Pin to a specific version for consistency
 
-      - name: Install Supabase CLI Locally
-        run: npm install supabase
-
-      - name: Apply Migrations
+      # Link Supabase project
+      - name: Link Supabase Project
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npx supabase db push
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+
+      # Apply database migrations
+      - name: Apply Migrations
+        run: supabase db push
 
   seed:
     name: Seed Database (Manual)
@@ -37,16 +39,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set Up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
+      # Install PostgreSQL client for seeding
       - name: Install PostgreSQL Client
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
+      # Run seed script
       - name: Run Seed Script
         env:
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
