@@ -29,6 +29,7 @@ shadow_port = 54320
 # The database major version to use. This has to be the same as your remote database's. Run `SHOW
 # server_version;` on the remote database to check.
 major_version = 15
+remote_url = "env(SUPABASE_URL)"
 
 [db.pooler]
 enabled = false
@@ -48,7 +49,7 @@ max_client_conn = 100
 [db.migrations]
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
-schema_paths = []
+schema_paths = ["./migrations/*.sql"]
 
 [db.seed]
 # If enabled, seeds the database after migrations during a db reset.
@@ -58,32 +59,15 @@ enabled = true
 sql_paths = ["./seeds/seed.sql"]
 
 [realtime]
-enabled = true
-# Bind realtime via either IPv4 or IPv6. (default: IPv4)
-# ip_version = "IPv6"
-# The maximum length in bytes of HTTP request headers. (default: 4096)
-# max_header_length = 4096
+enabled = false
 
 [studio]
-enabled = true
-# Port to use for Supabase Studio.
-port = 54323
-# External URL of the API server that frontend connects to.
-api_url = "http://127.0.0.1"
-# OpenAI API Key to use for Supabase AI in the Supabase Studio.
-openai_api_key = "env(OPENAI_API_KEY)"
+enabled = false
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
 # are monitored, and you can view the emails that would have been sent from the web interface.
 [inbucket]
-enabled = true
-# Port to use for the email testing server web interface.
-port = 54324
-# Uncomment to expose additional ports for testing user applications that send emails.
-# smtp_port = 54325
-# pop3_port = 54326
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+enabled = false
 
 [storage]
 enabled = true
