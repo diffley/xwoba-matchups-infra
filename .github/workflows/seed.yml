@@ -28,4 +28,4 @@ jobs:
       - name: Run Seed Script
         run: |
           set -e
-          psql "$SUPABASE_DB_URL?sslmode=require" -f seeds/seed.sql
+          psql "$SUPABASE_DB_URL?sslmode=require" -f supabase/seeds/seed.sql
