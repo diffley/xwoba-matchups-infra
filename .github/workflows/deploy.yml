@@ -57,7 +57,7 @@ jobs:
       - name: Run Seed Script
         run: |
           psql \
-            --host=$(echo "$SUPABASE_DB_URL" | sed -E 's~https?://([^\.]+)\..*~db.\1.supabase.co~') \
+            --host=$SUPABASE_DB_URL \
             --username=postgres \
             --dbname=postgres \
             --file=seeds/seed.sql
