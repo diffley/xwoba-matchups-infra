@@ -14,14 +14,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Supabase CLI
-        run: npm install -g supabase
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Supabase CLI Locally
+        run: npm install supabase
 
       - name: Apply Migrations
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: supabase db push --remote
+        run: npx supabase db push --remote
 
   seed:
     name: Seed Database (Manual)
@@ -31,6 +36,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
       - name: Install PostgreSQL Client
         run: |
