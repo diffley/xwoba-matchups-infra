@@ -10,48 +10,49 @@ jobs:
   migrate:
     name: Apply Supabase Migrations
     runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Set up Supabase CLI
-      - name: Setup Supabase CLI
-        uses: supabase/cli-action@v1
+      - name: Set Up Supabase CLI
+        uses: supabase/setup-cli@v1
         with:
-          version: 1.66.0  # Pin to a specific version for consistency
-
-      # Link Supabase project
-      - name: Link Supabase Project
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
-
-      # Apply database migrations
-      - name: Apply Migrations
-        run: supabase db push
+          version: latest
+      
+      - name: Link & Apply Migrations
+        run: |
+          supabase link --project-ref $SUPABASE_PROJECT_REF
+          supabase db push
 
   seed:
     name: Seed Database (Manual)
     runs-on: ubuntu-latest
+    
+    env:
+      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
+    
     needs: migrate
     if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Install PostgreSQL client for seeding
       - name: Install PostgreSQL Client
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
-      # Run seed script
       - name: Run Seed Script
         env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          PGPASSWORD: $SUPABASE_DB_PASSWORD
         run: |
           psql \
-            --host=$(echo "${{ secrets.SUPABASE_URL }}" | sed -E 's~https?://([^\.]+)\..*~db.\1.supabase.co~') \
+            --host=$(echo "$SUPABASE_URL" | sed -E 's~https?://([^\.]+)\..*~db.\1.supabase.co~') \
             --username=postgres \
             --dbname=postgres \
             --file=seeds/seed.sql
