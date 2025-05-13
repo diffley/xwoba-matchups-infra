@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
-      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Debug Environment Variables
+        run: |
+          echo "SUPABASE_PROJECT_REF: $SUPABASE_PROJECT_REF"
+          echo "SUPABASE_DB_PASSWORD: $SUPABASE_DB_PASSWORD"
+      
       - name: Set Up Supabase CLI
         uses: supabase/setup-cli@v1
         with:
@@ -34,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     
     needs: migrate
     if: ${{ github.event_name == 'workflow_dispatch' }}
