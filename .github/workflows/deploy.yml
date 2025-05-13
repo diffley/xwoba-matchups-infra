@@ -40,13 +40,14 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
     
     needs: migrate
+    
     if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PostgreSQL Client
         run: |
@@ -54,11 +55,9 @@ jobs:
           sudo apt-get install -y postgresql-client
 
       - name: Run Seed Script
-        env:
-          PGPASSWORD: $SUPABASE_DB_PASSWORD
         run: |
           psql \
-            --host=$(echo "$SUPABASE_URL" | sed -E 's~https?://([^\.]+)\..*~db.\1.supabase.co~') \
+            --host=$(echo "$SUPABASE_DB_URL" | sed -E 's~https?://([^\.]+)\..*~db.\1.supabase.co~') \
             --username=postgres \
             --dbname=postgres \
             --file=seeds/seed.sql
