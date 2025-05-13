@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   migrate:
@@ -13,17 +12,11 @@ jobs:
 
     env:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Debug Environment Variables
-        run: |
-          echo "SUPABASE_PROJECT_REF: $SUPABASE_PROJECT_REF"
-          echo "SUPABASE_DB_PASSWORD: $SUPABASE_DB_PASSWORD"
       
       - name: Set Up Supabase CLI
         uses: supabase/setup-cli@v1
@@ -34,30 +27,3 @@ jobs:
         run: |
           supabase link --project-ref $SUPABASE_PROJECT_REF
           supabase db push
-
-  seed:
-    name: Seed Database (Manual)
-    runs-on: ubuntu-latest
-    
-    env:
-      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-    
-    needs: migrate
-    
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install PostgreSQL Client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
-      - name: Run Seed Script
-        run: |
-          psql \
-            --host=$SUPABASE_DB_URL \
-            --username=postgres \
-            --dbname=postgres \
-            --file=seeds/seed.sql
