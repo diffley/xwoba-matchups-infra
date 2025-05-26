@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       # Trigger workflow only if migration files within this specific workspace change
-      - 'workspaces/xwoba-matchups-infra/supabase/migrations/**'
+      - 'supabase/migrations/**'
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,6 @@ jobs:
           version: latest
       
       - name: Link & Apply Migrations
-        working-directory: ./workspaces/xwoba-matchups-infra
         run: |
           echo "Linking to Supabase project: $SUPABASE_PROJECT_REF"
           supabase link --project-ref $SUPABASE_PROJECT_REF
