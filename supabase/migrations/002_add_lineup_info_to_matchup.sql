@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS daily_matchups (
 ALTER TABLE daily_matchups
   ADD COLUMN lineup_position INTEGER;  -- Optional: Lineup position for the batter
   COMMENT ON COLUMN daily_matchups.lineup_position IS 'Lineup position of the batter in the game (1-9), NULL if not available or published yet';
-  ADD COLUMN batter_team TEXT;,  -- Optional: Team name of the batter
+  ADD COLUMN batter_team TEXT;  -- Optional: Team name of the batter
   ADD COLUMN pitcher_team TEXT;  -- Optional: Team name of the pitcher
 
 -- Indexes on daily_matchups to speed up queries by date or score
